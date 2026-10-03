@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion · Assistant IA ENSA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:           #f0f6ff;
+      --bg-card:      #ffffff;
+      --blue:         #0066cc;
+      --blue-deep:    #004fa3;
+      --blue-glow:    rgba(0,102,204,0.12);
+      --blue-faint:   rgba(0,102,204,0.06);
+      --grid-line:    rgba(0,100,200,0.07);
+      --text-main:    #1a2a3a;
+      --text-muted:   #4a6a8a;
+      --text-dim:     #8aaabb;
+      --success:      #00875a;
+      --danger:       #cc1133;
+      --border:       rgba(0,102,204,0.22);
+      --border-dim:   rgba(0,102,204,0.10);
+      --shadow-sm:    0 1px 4px rgba(0,80,180,0.06);
+      --shadow-md:    0 4px 20px rgba(0,80,180,0.08);
+      --shadow-lg:    0 12px 40px rgba(0,80,180,0.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+        var(--bg);
+      background-size: 40px 40px, 40px 40px, auto;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 300;
+      background: rgba(240,246,255,0.96); backdrop-filter: blur(18px) saturate(1.3);
+      border-bottom: 1px solid var(--border-dim); padding: 0 60px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+    header::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      opacity: 0.35;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-shield {
+      width: 36px; height: 36px; background: var(--blue); border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px var(--blue-glow);
+    }
+    .logo-shield svg { width: 18px; height: 18px; fill: white; }
+    .logo-name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 13px; color: var(--blue); letter-spacing: 0.08em; }
+    .logo-sub  { font-family: 'Share Tech Mono', monospace; font-size: 8.5px; color: var(--text-muted); letter-spacing: 0.14em; margin-top: 1px; }
+    .header-badge {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+      color: var(--text-dim); background: var(--bg-card);
+      border: 1px solid var(--border-dim); border-radius: 6px;
+      padding: 5px 14px; text-transform: uppercase;
+    }
+
+    /* ── AUTH WRAP ── */
+    .auth-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 48px 20px; position: relative;
+    }
+    .auth-wrap::before {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); width: 700px; height: 500px;
+      background: radial-gradient(ellipse at center, rgba(0,100,220,0.10) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── AUTH CARD ── */
+    .auth-card {
+      position: relative; z-index: 1;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 44px 40px 36px;
+      width: 100%; max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      animation: rise 0.55s cubic-bezier(0.16,1,0.3,1) both;
+      overflow: hidden;
+    }
+    .auth-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    }
+
+    /* ── CARD HEADER ── */
+    .card-icon {
+      width: 52px; height: 52px; background: var(--blue); border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px var(--blue-glow); margin: 0 auto 20px;
+    }
+    .card-icon svg { width: 24px; height: 24px; fill: white; }
+    .card-eyebrow {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.18em; color: var(--blue); text-transform: uppercase;
+      text-align: center; margin-bottom: 8px;
+    }
+    .card-title {
+      font-family: 'Orbitron', sans-serif; font-weight: 900;
+      font-size: 22px; letter-spacing: -0.01em;
+      color: var(--text-main); text-align: center; margin-bottom: 6px;
+    }
+    .card-title .accent { color: var(--blue); }
+    .card-sub {
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 300;
+      color: var(--text-muted); text-align: center; margin-bottom: 32px; line-height: 1.6;
+    }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block; font-family: 'Exo 2', sans-serif; font-size: 12px;
+      font-weight: 600; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.07em; margin-bottom: 7px;
+    }
+    .form-input {
+      width: 100%; padding: 12px 16px;
+      font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 400;
+      color: var(--text-main); background: var(--bg);
+      border: 1.5px solid var(--border-dim); border-radius: 9px;
+      outline: none; transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      caret-color: var(--blue);
+    }
+    .form-input::placeholder { color: var(--text-dim); }
+    .form-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0,102,204,0.10);
+      background: var(--bg-card);
+    }
+
+    /* ── PASSWORD TOGGLE ── */
+    .input-wrap { position: relative; }
+    .toggle-pw {
+      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      color: var(--text-dim); display: flex; align-items: center;
+      transition: color 0.15s ease;
+    }
+    .toggle-pw:hover { color: var(--blue); }
+    .toggle-pw svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── SUBMIT BTN ── */
+    .btn-submit {
+      width: 100%; padding: 13px;
+      font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: white; background: var(--blue); border: none; border-radius: 9px;
+      cursor: pointer; margin-top: 8px;
+      box-shadow: 0 3px 14px var(--blue-glow);
+      transition: background 0.2s ease, transform 0.15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+    }
+    .btn-submit svg { width: 16px; height: 16px; fill: white; }
+    .btn-submit:hover { background: var(--blue-deep); transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ── ALERT ── */
+    .alert-error {
+      background: rgba(204,17,51,0.07); border: 1px solid rgba(204,17,51,0.22);
+      border-radius: 9px; padding: 11px 16px; margin-bottom: 20px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; color: var(--danger);
+      display: flex; align-items: center; gap: 9px; line-height: 1.5;
+    }
+    .alert-error svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+    /* ── DIVIDER ── */
+    .divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 18px; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border-dim); }
+    .divider span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ── SWITCH LINK ── */
+    .switch-link {
+      text-align: center; font-family: 'Exo 2', sans-serif; font-size: 13.5px;
+      color: var(--text-muted);
+    }
+    .switch-link a { color: var(--blue); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s ease; }
+    .switch-link a:hover { border-bottom-color: var(--blue); }
+
+    /* ── RGPD NOTICE ── */
+    .rgpd-notice {
+      margin-top: 22px; padding: 10px 14px;
+      background: var(--blue-faint); border: 1px solid var(--border-dim);
+      border-radius: 8px; font-family: 'Exo 2', sans-serif;
+      font-size: 11.5px; color: var(--text-muted); line-height: 1.55;
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .rgpd-notice strong { color: var(--blue); font-weight: 600; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: rgba(232,240,251,0.7); border-top: 1px solid var(--border-dim);
+      padding: 18px 60px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-family: 'Exo 2', sans-serif; font-size: 12px; color: var(--text-dim); }
+    .footer-tags { display: flex; gap: 7px; }
+    .footer-tag { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted); background: white; border: 1px solid var(--border-dim); padding: 3px 10px; border-radius: 5px; text-transform: uppercase; }
+
+    @keyframes rise { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    @media (max-width: 800px) {
+      header { padding: 0 20px; }
+      .auth-card { padding: 36px 24px 28px; }
+      footer { padding: 16px 20px; flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">
+      <div class="logo-shield">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">ENSA · Assistant IA</div>
+        <div class="logo-sub">RGPD COMPLIANT · BÉNI MELLAL</div>
+      </div>
+    </a>
+    <div class="header-badge">Accès sécurisé</div>
+  </header>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg>
+      </div>
+      <div class="card-eyebrow">Éthique &amp; Droit du Numérique · ENSA</div>
+      <h1 class="card-title"><span class="accent">Connexion</span></h1>
+      <p class="card-sub">Accédez à votre assistant RGPD pédagogique</p>
+
+      {% if erreur %}
+      <div class="alert-error">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {{ erreur }}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="/login">
+        <div class="form-group">
+          <label class="form-label" for="email">Adresse e-mail</label>
+          <input class="form-input" type="email" id="email" name="email"
+            placeholder="votre@email.com" required autocomplete="email"
+            value="{{ email_saisi or '' }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Mot de passe</label>
+          <div class="input-wrap">
+            <input class="form-input" type="password" id="password" name="password"
+              placeholder="••••••••" required autocomplete="current-password"
+              style="padding-right: 44px;">
+            <button type="button" class="toggle-pw" onclick="togglePw('password', this)" title="Afficher/masquer">
+              <svg id="eye-login" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Se connecter
+        </button>
+      </form>
+
+      <div class="divider"><span>Nouveau sur la plateforme ?</span></div>
+
+      <div class="switch-link">
+        Pas encore de compte ? <a href="/signup">Créer un compte</a>
+      </div>
+
+      <div class="rgpd-notice">
+        🛡️&nbsp;<span><strong>Notice RGPD</strong> — Vos identifiants sont stockés localement et ne sont jamais transmis à des services tiers.</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-copy">© 2025 ENSA Béni Mellal · Module Éthique et Droit du Numérique</div>
+    <div class="footer-tags">
+      <span class="footer-tag">Flask</span>
+      <span class="footer-tag">SQLite</span>
+      <span class="footer-tag">RGPD</span>
+      <span class="footer-tag">Groq</span>
+    </div>
+  </footer>
+
+  <script>
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      btn.querySelector('svg').style.opacity = isHidden ? '0.4' : '1';
+    }
+  </script>
+</body>
+</html>

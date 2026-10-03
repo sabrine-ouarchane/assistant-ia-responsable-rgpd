@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistant RGPD | ENSA Beni Mellal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef4fd;
+      --panel: #f5f9ff;
+      --line: rgba(50, 129, 228, 0.12);
+      --line-strong: rgba(36, 112, 214, 0.24);
+      --blue: #1269d3;
+      --blue-deep: #0d56ad;
+      --ink: #21344c;
+      --muted: #6582a6;
+      --soft: #8ea7c4;
+      --success: #31b988;
+      --danger: #d94c6a;
+      --shadow-sm: 0 4px 18px rgba(18, 105, 211, 0.08);
+      --shadow-md: 0 16px 40px rgba(18, 105, 211, 0.12);
+      --sidebar: 348px;
+      --header: 74px;
+      --composer: 138px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Exo 2', sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) 1fr;
+      grid-template-rows: var(--header) 1fr;
+      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(230,239,251,0.88));
+    }
+
+    .topbar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: var(--sidebar) 1fr auto;
+      align-items: center;
+      height: var(--header);
+      padding: 0 22px 0 18px;
+      background: rgba(242, 247, 255, 0.95);
+      border-bottom: 1px solid var(--line-strong);
+      box-shadow: 0 2px 8px rgba(18, 105, 211, 0.04);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #1c77df, #0d58ba);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 18px rgba(18, 105, 211, 0.2);
+      flex: 0 0 auto;
+    }
+
+    .brand-badge svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    .brand-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.04em;
+    }
+
+    .brand-subtitle {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--soft);
+      margin-top: 3px;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 500;
+      color: #5a7696;
+      letter-spacing: 0.01em;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(49, 185, 136, 0.35);
+      background: rgba(49, 185, 136, 0.08);
+      color: #129768;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(49, 185, 136, 0.16);
+    }
+
+    .action-btn {
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 132px;
+      height: 34px;
+      border-radius: 10px;
+      padding: 0 20px;
+      background: linear-gradient(180deg, #1974de, #0f5ebf);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 18px rgba(18, 105, 211, 0.16);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .action-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 22px rgba(18, 105, 211, 0.2); }
+
+    .sidebar {
+      background: linear-gradient(180deg, #dfe9f6 0%, #d5e1f1 100%);
+      border-right: 1px solid var(--line-strong);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .sidebar-top {
+      padding: 20px 16px 18px;
+      border-bottom: 1px solid rgba(36, 112, 214, 0.08);
+    }
+
+    .new-chat-btn {
+      width: 100%;
+      height: 44px;
+      border: none;
+      border-radius: 13px;
+      background: linear-gradient(180deg, #1a72da, #0f5ebf);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(18, 105, 211, 0.16);
+    }
+
+    .new-chat-btn span:first-child {
+      font-size: 24px;
+      line-height: 0;
+      font-family: sans-serif;
+      font-weight: 300;
+    }
+
+    .sidebar-section {
+      padding: 22px 16px 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .sidebar-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #87a7ca;
+      margin-bottom: 20px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .history-item {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.48);
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+
+    .history-item:hover {
+      background: rgba(255, 255, 255, 0.82);
+      border-color: rgba(36, 112, 214, 0.12);
+      transform: translateX(2px);
+    }
+
+    .history-question {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: #446382;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .history-link { display: block; text-decoration: none; color: inherit; }
+
+    .history-meta {
+      margin-top: 6px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: #93a9bf;
+      letter-spacing: 0.03em;
+    }
+
+    .history-empty {
+      margin-top: 12px;
+      text-align: center;
+      color: #86a1bc;
+      font-size: 17px;
+      line-height: 1.45;
+      padding: 28px 20px;
+    }
+
+    .user-card {
+      margin: auto 16px 14px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(36, 112, 214, 0.08);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #1b75de, #0d58ba);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .user-school {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--soft);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .workspace {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.3), rgba(231,239,250,0.45));
+      background-size: 50px 50px, 50px 50px, auto;
+    }
+
+    .workspace-inner {
+      height: 100%;
+      overflow-y: auto;
+      padding: 52px 28px calc(var(--composer) + 30px);
+    }
+
+    .hero {
+      max-width: 860px;
+      margin: 60px auto 0;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 28px;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+      content: "";
+      width: 46px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(18, 105, 211, 0.7));
+    }
+
+    .eyebrow::after {
+      background: linear-gradient(90deg, rgba(18, 105, 211, 0.7), transparent);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(44px, 5vw, 60px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: #24364d;
+    }
+
+    .hero h1 .accent { color: var(--blue); }
+
+    .hero p {
+      max-width: 700px;
+      margin: 18px auto 0;
+      font-size: 18px;
+      line-height: 1.65;
+      color: #6d88a8;
+    }
+
+    .suggestions {
+      max-width: 760px;
+      margin: 40px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .suggestion-chip {
+      border: 1px solid rgba(36, 112, 214, 0.08);
+      background: rgba(255, 255, 255, 0.92);
+      color: #547499;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      box-shadow: 0 8px 18px rgba(18, 105, 211, 0.06);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+    }
+
+    .suggestion-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 22px rgba(18, 105, 211, 0.1);
+      color: var(--blue);
+    }
+
+    .conversation {
+      max-width: 860px;
+      margin: 12px auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 0 20px;
+    }
+
+    .message {
+      border-radius: 24px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(36, 112, 214, 0.09);
+      backdrop-filter: blur(4px);
+    }
+
+    .message-user {
+      margin-left: auto;
+      max-width: 78%;
+      background: linear-gradient(180deg, #1a72da, #0f5ebf);
+      color: #fff;
+      border-bottom-right-radius: 10px;
+    }
+
+    .message-assistant {
+      max-width: 88%;
+      background: rgba(255, 255, 255, 0.92);
+      color: #41627f;
+      border-bottom-left-radius: 10px;
+      white-space: pre-wrap;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .message-alert {
+      border-color: rgba(217, 76, 106, 0.18);
+      background: rgba(255, 245, 248, 0.95);
+      color: #b94963;
+    }
+
+    .message-label {
+      display: block;
+      margin-bottom: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .composer-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0 28px 18px;
+      background: linear-gradient(180deg, rgba(238,244,253,0), rgba(238,244,253,0.94) 24%, rgba(238,244,253,0.98) 100%);
+    }
+
+    .rgpd-banner {
+      max-width: 1490px;
+      margin: 0 auto 14px;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(36, 112, 214, 0.18);
+      background: rgba(239, 246, 255, 0.8);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+      color: #6d89aa;
+      font-size: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+    }
+
+    .rgpd-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--blue);
+      flex: 0 0 auto;
+    }
+
+    .rgpd-banner strong {
+      color: var(--blue);
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .composer-panel {
+      max-width: 1510px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(36, 112, 214, 0.16);
+      border-radius: 28px;
+      padding: 8px 12px 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .composer-prefix {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #86a6c8;
+      font-size: 28px;
+      font-weight: 300;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .composer-input {
+      flex: 1;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 36px;
+      max-height: 140px;
+      color: var(--ink);
+      padding: 10px 0 8px;
+    }
+
+    .composer-input::placeholder { color: #94afcb; }
+
+    .composer-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      color: #8fafcb;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(18, 105, 211, 0.08);
+      color: var(--blue);
+    }
+
+    .icon-btn.submit {
+      background: linear-gradient(180deg, #e7effa, #d7e4f5);
+      color: #a9bfd7;
+    }
+
+    .icon-btn.submit.active {
+      background: linear-gradient(180deg, #1a72da, #0f5ebf);
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(18, 105, 211, 0.16);
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .composer-footer {
+      max-width: 1510px;
+      margin: 6px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 6px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: #95adc5;
+      letter-spacing: 0.03em;
+    }
+
+    .composer-count.danger { color: var(--danger); }
+
+    @media (max-width: 1180px) {
+      :root { --sidebar: 300px; }
+      .hero h1 { font-size: clamp(38px, 6vw, 50px); }
+      .hero p { font-size: 16px; }
+    }
+
+    @media (max-width: 920px) {
+      body { overflow: auto; }
+
+      .app-shell {
+        min-height: 100vh;
+        height: auto;
+        display: block;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        height: auto;
+        padding: 16px;
+      }
+
+      .page-title { order: 3; text-align: left; }
+      .topbar-actions { justify-content: space-between; flex-wrap: wrap; }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--line-strong); }
+      .workspace { min-height: 70vh; }
+      .workspace-inner { padding: 24px 16px 220px; }
+      .hero { margin-top: 20px; padding: 0; }
+      .hero h1 { font-size: 36px; }
+      .hero p { font-size: 15px; }
+      .suggestion-chip { width: 100%; }
+      .message-user, .message-assistant { max-width: 100%; }
+
+      .composer-wrap {
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: 30;
+        padding: 0 12px 12px;
+      }
+
+      .rgpd-banner {
+        font-size: 12px;
+        padding: 10px 14px;
+        align-items: flex-start;
+      }
+
+      .composer-panel { border-radius: 22px; }
+      .composer-footer { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  {% set user_name = session.get('user', 'Utilisateur') %}
+  {% set user_initial = (user_name[:1] if user_name else 'U')|upper %}
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">ENSA - Assistant IA</div>
+          <div class="brand-subtitle">RGPD - BENI MELLAL</div>
+        </div>
+      </div>
+
+      <div class="page-title">Nouvelle discussion</div>
+
+      <div class="topbar-actions">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          En ligne
+        </div>
+        {% if is_admin %}<a href="/admin" class="action-btn" style="background:linear-gradient(180deg,#7c3aed,#5b21b6);">Admin</a>{% endif %}
+        <a href="/historique" class="action-btn">Historique</a>
+        <a href="/logout" class="action-btn">Deconnexion</a>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a class="new-chat-btn" href="/new-chat">
+          <span>+</span>
+          <span>Nouvelle discussion</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Discussions recentes</div>
+
+        {% if historique_sidebar %}
+          <div class="history-list">
+            {% for row in historique_sidebar %}
+              <div class="history-item">
+                <a class="history-link" href="/historique">
+                  <div class="history-question">{{ row[1] }}</div>
+                  <div class="history-meta">{{ row[4] }}</div>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="history-empty">
+            Aucune discussion<br>pour l'instant
+          </div>
+        {% endif %}
+      </div>
+
+      <a class="user-card" href="/profil" style="text-decoration:none;">
+        <div class="user-avatar">{{ user_initial }}</div>
+        <div>
+          <div class="user-name">{{ user_name }}</div>
+          <div class="user-school">Beni Mellal - EDN</div>
+        </div>
+      </a>
+    </aside>
+
+    <main class="workspace">
+      <div class="workspace-inner">
+        {% if conversation %}
+          <section class="conversation">
+            {% for row in conversation %}
+              <div class="message message-user">
+                <span class="message-label">Votre question</span>
+                {{ row[1] }}
+              </div>
+
+              <div class="message message-assistant {% if row[3] == 'alerte_rgpd' %}message-alert{% endif %}">
+                <span class="message-label">{% if row[3] == 'alerte_rgpd' %}Alerte RGPD{% else %}Assistant RGPD{% endif %}</span>
+                {{ row[2] }}
+              </div>
+            {% endfor %}
+          </section>
+        {% else %}
+          <section class="hero">
+            <div class="eyebrow">Ethique & Droit du numerique - ENSA</div>
+            <h1>Assistant <span class="accent">RGPD</span><br>Intelligent</h1>
+            <p>
+              Posez vos questions sur le RGPD, la protection des donnees
+              personnelles et le droit du numerique.
+            </p>
+
+            <div class="suggestions">
+              <button class="suggestion-chip" type="button" data-question="Qu'est-ce que le RGPD ?">Qu'est-ce que le RGPD ?</button>
+              <button class="suggestion-chip" type="button" data-question="Droits des personnes concernees">Droits des personnes concernees</button>
+              <button class="suggestion-chip" type="button" data-question="Obligations du responsable de traitement">Obligations du responsable de traitement</button>
+              <button class="suggestion-chip" type="button" data-question="Qu'est-ce qu'une violation de donnees ?">Qu'est-ce qu'une violation de donnees ?</button>
+              <button class="suggestion-chip" type="button" data-question="Difference entre donnees personnelles et sensibles">Difference entre donnees personnelles et sensibles</button>
+            </div>
+          </section>
+        {% endif %}
+      </div>
+
+      <div class="composer-wrap">
+        <div class="rgpd-banner">
+          <svg class="rgpd-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2L5 5v6c0 4.55 2.92 8.84 7 10 4.08-1.16 7-5.45 7-10V5l-7-3z"/></svg>
+          <span><strong>RGPD</strong> Ne saisissez aucune donnee personnelle identifiable. Chaque echange est journalise localement.</span>
+        </div>
+
+        <form method="POST" id="main-form">
+          <div class="composer-panel">
+            <div class="composer-prefix">+</div>
+            <textarea
+              class="composer-input"
+              id="question"
+              name="question"
+              rows="1"
+              maxlength="1000"
+              placeholder="Poser une question sur le RGPD ou le droit du numerique..."
+            ></textarea>
+
+            <div class="composer-tools">
+              <button class="icon-btn" type="button" aria-label="Microphone">
+                <svg viewBox="0 0 24 24"><path d="M12 15a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v4a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/><path d="M8 21h8"/></svg>
+              </button>
+              <button class="icon-btn submit" id="submit-btn" type="submit" aria-label="Envoyer">
+                <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="composer-footer">
+            <span>Entree pour envoyer - Maj+Entree pour saut de ligne</span>
+            <span class="composer-count" id="char-count">0 / 1000</span>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const textarea = document.getElementById('question');
+    const charCount = document.getElementById('char-count');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('main-form');
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+    }
+
+    function updateComposerState() {
+      const length = textarea.value.length;
+      charCount.textContent = length + ' / 1000';
+      charCount.classList.toggle('danger', length > 900);
+      submitBtn.classList.toggle('active', textarea.value.trim().length > 0);
+      autoResize(textarea);
+    }
+
+    textarea.addEventListener('input', updateComposerState);
+
+    textarea.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        if (textarea.value.trim()) {
+          form.submit();
+        }
+      }
+    });
+
+    document.querySelectorAll('.suggestion-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        textarea.value = chip.dataset.question || chip.textContent.trim();
+        updateComposerState();
+        textarea.focus();
+      });
+    });
+
+    form.addEventListener('submit', function () {
+      textarea.value = '';
+      updateComposerState();
+    });
+
+    updateComposerState();
+  </script>
+</body>
+</html>

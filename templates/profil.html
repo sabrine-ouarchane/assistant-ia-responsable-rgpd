@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil | Assistant RGPD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef4fd;
+      --line: rgba(50, 129, 228, 0.12);
+      --line-strong: rgba(36, 112, 214, 0.24);
+      --blue: #1269d3;
+      --blue-deep: #0d56ad;
+      --ink: #21344c;
+      --muted: #6582a6;
+      --soft: #8ea7c4;
+      --success: #31b988;
+      --danger: #d94c6a;
+      --shadow-sm: 0 4px 18px rgba(18, 105, 211, 0.08);
+      --shadow-md: 0 16px 40px rgba(18, 105, 211, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Exo 2', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.72), rgba(230,239,251,0.92));
+      background-size: 50px 50px, 50px 50px, auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px;
+      background: rgba(242, 247, 255, 0.95);
+      border-bottom: 1px solid var(--line-strong);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #1c77df, #0d58ba);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 18px rgba(18, 105, 211, 0.2);
+    }
+
+    .badge svg { width: 20px; height: 20px; fill: #fff; }
+    .brand-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: 0.04em; }
+    .brand-sub { font-family: 'Share Tech Mono', monospace; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--soft); margin-top: 3px; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 36px;
+      padding: 0 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #1974de, #0f5ebf);
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(18, 105, 211, 0.16);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.82);
+      color: #5a7696;
+      border: 1px solid rgba(36, 112, 214, 0.12);
+    }
+
+    .page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 48px 20px 70px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+      content: "";
+      width: 46px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(18, 105, 211, 0.7));
+    }
+
+    .eyebrow::after {
+      background: linear-gradient(90deg, rgba(18, 105, 211, 0.7), transparent);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(34px, 4vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: #24364d;
+    }
+
+    h1 .accent { color: var(--blue); }
+
+    .hero p {
+      max-width: 620px;
+      margin: 16px auto 0;
+      font-size: 17px;
+      line-height: 1.65;
+      color: #6d88a8;
+    }
+
+    .form-card {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(36, 112, 214, 0.12);
+      border-radius: 24px;
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+    }
+
+    .alert {
+      border-radius: 14px;
+      padding: 13px 16px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .alert-error {
+      color: #b94963;
+      border: 1px solid rgba(217, 76, 106, 0.18);
+      background: rgba(255, 245, 248, 0.96);
+    }
+
+    .alert-success {
+      color: #168a61;
+      border: 1px solid rgba(49, 185, 136, 0.18);
+      background: rgba(240, 255, 249, 0.96);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--soft);
+    }
+
+    .field input {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(36, 112, 214, 0.12);
+      background: rgba(244, 248, 255, 0.88);
+      padding: 0 16px;
+      font: inherit;
+      font-size: 15px;
+      color: #4a6b8f;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(18, 105, 211, 0.08);
+    }
+
+    .form-note {
+      margin-top: 2px;
+      font-size: 13px;
+      color: #87a2be;
+    }
+
+    .actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-actions {
+        justify-content: space-between;
+      }
+      .form-card {
+        padding: 20px;
+      }
+      .actions {
+        flex-direction: column;
+      }
+      .actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="brand">
+      <div class="badge"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg></div>
+      <div>
+        <div class="brand-title">ENSA - Assistant IA</div>
+        <div class="brand-sub">RGPD - BENI MELLAL</div>
+      </div>
+    </a>
+
+    <div class="nav-actions">
+      <a href="/" class="btn btn-secondary">Accueil</a>
+      <a href="/historique" class="btn btn-secondary">Historique</a>
+      <a href="/logout" class="btn btn-primary">Deconnexion</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">Compte utilisateur - ENSA</div>
+      <h1>Modifier votre <span class="accent">profil</span></h1>
+      <p>Seules les informations du compte cree lors du signup sont affichees ici.</p>
+    </section>
+
+    <section class="form-card">
+      {% if erreur %}
+        <div class="alert alert-error">{{ erreur }}</div>
+      {% endif %}
+      {% if succes %}
+        <div class="alert alert-success">{{ succes }}</div>
+      {% endif %}
+
+      <form method="POST">
+        <div class="form-grid">
+          <div class="field">
+            <label for="nom">Nom complet</label>
+            <input type="text" id="nom" name="nom" value="{{ user['nom'] }}" required>
+          </div>
+
+          <div class="field">
+            <label for="email">Adresse e-mail</label>
+            <input type="email" id="email" name="email" value="{{ user['email'] }}" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Nouveau mot de passe</label>
+            <input type="password" id="password" name="password" placeholder="Laisser vide pour conserver l'actuel">
+            <div class="form-note">Optionnel. Minimum 8 caracteres.</div>
+          </div>
+
+          <div class="field">
+            <label for="confirm">Confirmer le mot de passe</label>
+            <input type="password" id="confirm" name="confirm" placeholder="Confirmer le nouveau mot de passe">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <a href="/" class="btn btn-secondary">Retour</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

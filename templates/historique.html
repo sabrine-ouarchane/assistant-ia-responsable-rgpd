@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historique · Assistant IA ENSA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:           #f0f6ff;
+      --bg-card:      #ffffff;
+      --blue:         #0066cc;
+      --blue-deep:    #004fa3;
+      --blue-glow:    rgba(0,102,204,0.12);
+      --blue-faint:   rgba(0,102,204,0.06);
+      --grid-line:    rgba(0,100,200,0.07);
+      --text-main:    #1a2a3a;
+      --text-muted:   #4a6a8a;
+      --text-dim:     #8aaabb;
+      --success:      #00875a;
+      --danger:       #cc1133;
+      --warn:         #b86e00;
+      --border:       rgba(0,102,204,0.22);
+      --border-dim:   rgba(0,102,204,0.10);
+      --shadow-sm:    0 1px 4px rgba(0,80,180,0.06);
+      --shadow-md:    0 4px 20px rgba(0,80,180,0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Exo 2', sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+    header {
+      position: sticky; top: 0; z-index: 300;
+      background: rgba(240,246,255,0.96); backdrop-filter: blur(18px) saturate(1.3);
+      border-bottom: 1px solid var(--border-dim); padding: 0 60px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm);
+    }
+    header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), transparent); opacity: 0.35; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+    .logo-shield { width: 36px; height: 36px; background: var(--blue); border-radius: 9px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px var(--blue-glow); }
+    .logo-shield svg { width: 18px; height: 18px; fill: white; }
+    .logo-name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 13px; color: var(--blue); letter-spacing: 0.08em; }
+    .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 8.5px; color: var(--text-muted); letter-spacing: 0.14em; margin-top: 1px; }
+    nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+    nav a { font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; padding: 7px 16px; border-radius: 8px; border: 1px solid transparent; transition: all 0.18s ease; }
+    nav a:hover { color: var(--blue); background: var(--blue-faint); border-color: var(--border-dim); }
+    nav a.active { color: var(--blue); font-weight: 600; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .status-pill { display: flex; align-items: center; gap: 7px; padding: 5px 14px; border: 1px solid rgba(0,135,90,0.25); background: rgba(0,135,90,0.08); border-radius: 20px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--success); letter-spacing: 0.08em; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); animation: blink 2s ease-in-out infinite; }
+    .btn-cta { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; color: white; background: var(--blue); border: none; border-radius: 8px; padding: 9px 20px; cursor: pointer; text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.2s ease; box-shadow: 0 2px 10px var(--blue-glow); }
+    .btn-cta:hover { background: var(--blue-deep); transform: translateY(-1px); }
+
+    .page-hero {
+      position: relative; z-index: 1; padding: 56px 60px 48px; text-align: center;
+      background: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px), var(--bg);
+      background-size: 40px 40px, 40px 40px, auto; overflow: hidden;
+      animation: rise 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .page-hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 700px; height: 300px; background: radial-gradient(ellipse at center top, rgba(0,100,220,0.09) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+    .back-link { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 7px; font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-muted); text-decoration: none; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-dim); background: rgba(255,255,255,0.7); margin-bottom: 28px; transition: all 0.18s ease; box-shadow: var(--shadow-sm); }
+    .back-link svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .back-link:hover { color: var(--blue); border-color: var(--border); background: var(--blue-faint); }
+    .page-eyebrow { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 14px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--blue); text-transform: uppercase; margin-bottom: 16px; }
+    .page-eyebrow::before, .page-eyebrow::after { content: ''; width: 36px; height: 1px; background: linear-gradient(90deg, transparent, var(--blue)); display: block; }
+    .page-eyebrow::after { background: linear-gradient(90deg, var(--blue), transparent); }
+    .page-title { position: relative; z-index: 1; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: clamp(24px, 3.5vw, 38px); line-height: 1.12; letter-spacing: -0.01em; color: var(--text-main); margin-bottom: 8px; }
+    .page-title .accent { color: var(--blue); }
+    .page-sub { position: relative; z-index: 1; font-family: 'Share Tech Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase; }
+
+    .main { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 32px 60px 80px; animation: rise 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both; }
+
+    .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 12px 18px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+    .filter-bar::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), transparent); opacity: 0.3; }
+    .filter-label { font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
+    .filter-btn { padding: 6px 18px; border-radius: 20px; font-family: 'Exo 2', sans-serif; font-size: 12.5px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-dim); background: transparent; color: var(--text-muted); transition: all 0.18s ease; }
+    .filter-btn:hover { color: var(--blue); border-color: var(--border); background: var(--blue-faint); }
+    .filter-btn.active { background: var(--text-main); color: white; border-color: var(--text-main); }
+    .filter-btn.cloud.active { background: var(--blue); border-color: var(--blue); color: white; box-shadow: 0 2px 8px var(--blue-glow); }
+    .filter-btn.degrade.active { background: var(--warn); border-color: rgba(184,110,0,0.5); color: white; }
+    .count-pill { margin-left: auto; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--blue); background: var(--blue-faint); border: 1px solid var(--border-dim); padding: 4px 14px; border-radius: 20px; letter-spacing: 0.06em; }
+
+    .table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); position: relative; }
+    .table-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+    .table-head { display: grid; grid-template-columns: 52px 1fr 1.4fr 160px 110px; gap: 16px; padding: 12px 24px; background: rgba(0,102,204,0.04); border-bottom: 1px solid var(--border-dim); font-family: 'Orbitron', sans-serif; font-size: 9.5px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; }
+    .table-row { display: grid; grid-template-columns: 52px 1fr 1.4fr 160px 110px; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--border-dim); align-items: start; transition: background 0.15s ease; position: relative; }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: rgba(0,102,204,0.025); }
+    .table-row::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); opacity: 0; transition: opacity 0.2s ease; }
+    .table-row:hover::before { opacity: 0.5; }
+    .row-num { width: 32px; height: 32px; border-radius: 8px; background: var(--blue-faint); border: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700; color: var(--blue); }
+    .row-question { font-size: 13.5px; font-weight: 500; color: var(--text-main); line-height: 1.5; }
+    .row-response { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
+    .row-date { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+    .delete-form { display: flex; justify-content: flex-end; }
+    .delete-btn { padding: 8px 12px; border-radius: 9px; border: 1px solid rgba(204,17,51,0.20); background: rgba(204,17,51,0.06); color: var(--danger); font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.18s ease; }
+    .delete-btn:hover { background: rgba(204,17,51,0.12); transform: translateY(-1px); }
+
+    .empty-state { text-align: center; padding: 72px 24px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .empty-icon { font-size: 46px; }
+    .empty-title { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 20px; color: var(--text-muted); letter-spacing: 0.06em; }
+    .empty-sub { font-size: 14px; color: var(--text-dim); max-width: 340px; line-height: 1.65; }
+    .btn-start { display: inline-flex; align-items: center; gap: 8px; background: var(--blue); color: white; border: none; border-radius: 9px; padding: 11px 26px; font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; text-decoration: none; margin-top: 6px; transition: all 0.2s ease; box-shadow: 0 2px 12px var(--blue-glow); }
+    .btn-start:hover { background: var(--blue-deep); transform: translateY(-1px); }
+
+    footer { position: relative; z-index: 1; background: rgba(232,240,251,0.7); border-top: 1px solid var(--border-dim); padding: 22px 60px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-family: 'Exo 2', sans-serif; font-size: 12px; color: var(--text-dim); }
+    .footer-tags { display: flex; gap: 7px; }
+    .footer-tag { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted); background: white; border: 1px solid var(--border-dim); padding: 3px 10px; border-radius: 5px; text-transform: uppercase; }
+    @keyframes rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @media (max-width: 800px) {
+      header { padding: 0 20px; }
+      nav { display: none; }
+      .page-hero, .main { padding-left: 20px; padding-right: 20px; }
+      .table-head, .table-row { grid-template-columns: 40px 1fr; }
+      .table-head span:nth-child(n+3), .table-row > div:nth-child(n+3), .table-row > form { display: none; }
+      footer { padding: 18px 20px; flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">
+      <div class="logo-shield">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">ENSA · Assistant IA</div>
+        <div class="logo-sub">RGPD COMPLIANT · BÉNI MELLAL</div>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Accueil</a>
+      <a href="/profil">Profil</a>
+      <a href="/historique" class="active">Historique</a>
+    </nav>
+    <div class="header-right">
+      <div class="status-pill">
+       <div class="status-dot"></div>
+       {{ session.get('user', '') }}
+      </div>
+      <a href="/logout" class="btn-cta" style="font-size:10px;padding:7px 16px;">Déconnexion</a>
+    </div>
+  </header>
+
+  <div class="page-hero">
+    <div>
+      <a href="/" class="back-link">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour à l'accueil
+      </a>
+    </div>
+    <div class="page-eyebrow">Traçabilité RGPD · SQLite local</div>
+    <h1 class="page-title">Journal des <span class="accent">Demandes</span></h1>
+    <p class="page-sub">Audit complet · Conformité RGPD</p>
+  </div>
+
+  <div class="main">
+    <div class="filter-bar">
+      <span class="filter-label">Total</span>
+      <span class="count-pill" id="count-badge">{{ historique|length }} entrée(s)</span>
+    </div>
+
+    <div class="table-card">
+      {% if historique %}
+        <div class="table-head">
+          <span>#</span><span>Question</span><span>Réponse</span><span>Horodatage</span><span>Action</span>
+        </div>
+        {% for row in historique %}
+        <div class="table-row">
+          <div class="row-num">{{ row[0] }}</div>
+          <div class="row-question">{{ row[1] }}</div>
+          <div class="row-response">{{ row[2][:180] }}{% if row[2]|length > 180 %}…{% endif %}</div>
+          <div class="row-date">{{ row[4] }}</div>
+          <form class="delete-form" method="POST" action="/discussion/{{ row[0] }}/supprimer" onsubmit="return confirm('Supprimer ce message de l\'historique ?');">
+            <input type="hidden" name="next" value="historique">
+            <button class="delete-btn" type="submit">Supprimer</button>
+          </form>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">Aucun enregistrement</div>
+          <p class="empty-sub">Les demandes apparaîtront ici après votre première interaction.</p>
+          <a href="/" class="btn-start">Poser une question</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-copy">© 2025 ENSA Béni Mellal · Module Éthique et Droit du Numérique</div>
+    <div class="footer-tags">
+      <span class="footer-tag">Flask</span>
+      <span class="footer-tag">SQLite</span>
+      <span class="footer-tag">RGPD</span>
+      <span class="footer-tag">Groq</span>
+    </div>
+  </footer>
+
+</body>
+</html>

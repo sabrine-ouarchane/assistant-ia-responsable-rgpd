@@ -1,0 +1,16 @@
+# Secrets
+.env
+
+# Base de données locale (contient des comptes et des historiques)
+*.db
+
+# Environnement virtuel et caches
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Éditeurs
+.vs/
+.vscode/
+.idea/

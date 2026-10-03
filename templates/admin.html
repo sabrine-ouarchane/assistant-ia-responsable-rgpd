@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration | ENSA Beni Mellal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef4fd; --blue: #1269d3; --ink: #21344c;
+      --muted: #6582a6; --soft: #8ea7c4;
+      --success: #31b988; --danger: #d94c6a; --purple: #7c3aed;
+      --line: rgba(50,129,228,0.12);
+      --shadow-sm: 0 4px 18px rgba(18,105,211,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Exo 2', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; padding: 0 28px;
+      background: rgba(242,247,255,0.97);
+      border-bottom: 1px solid rgba(36,112,214,0.2);
+      box-shadow: 0 2px 8px rgba(18,105,211,0.06);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-badge { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(180deg,#7c3aed,#5b21b6); display: grid; place-items: center; }
+    .brand-badge svg { width: 18px; height: 18px; fill:#fff; }
+    .brand-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--purple); }
+    .brand-sub { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--soft); margin-top: 2px; }
+    .topbar-actions { display: flex; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; height: 34px; padding: 0 18px; border-radius: 10px; border: none; font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; cursor: pointer; transition: transform 0.15s; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-blue { background: linear-gradient(180deg,#1a72da,#0f5ebf); color:#fff; }
+    .btn-red  { background: linear-gradient(180deg,#e05070,#c0334f); color:#fff; }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 36px 24px 60px; }
+    .page-heading { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 700; color: var(--purple); margin-bottom: 4px; }
+    .page-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); margin-bottom: 10px; }
+
+    .rgpd-notice {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(18,105,211,0.05); border: 1px solid rgba(18,105,211,0.15);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 32px;
+      font-size: 13px; color: var(--muted); line-height: 1.55;
+    }
+    .rgpd-notice svg { width: 16px; height: 16px; fill: var(--blue); flex-shrink: 0; margin-top: 2px; }
+    .rgpd-notice strong { color: var(--blue); }
+
+    .stats { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 150px; background: rgba(255,255,255,0.92); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow-sm); }
+    .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft); margin-bottom: 8px; }
+    .stat-value { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 700; color: var(--blue); }
+    .stat-value.purple { color: var(--purple); }
+    .stat-value.green  { color: var(--success); }
+
+    .section-title { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+
+    .table-wrap { background: rgba(255,255,255,0.92); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: rgba(18,105,211,0.05); padding: 12px 16px; text-align: left; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+    tbody tr:hover { background: rgba(18,105,211,0.03); }
+    tbody tr + tr { border-top: 1px solid var(--line); }
+    tbody td { padding: 13px 16px; font-size: 14px; color: var(--ink); vertical-align: middle; }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .badge-admin { background: rgba(124,58,237,0.12); color: var(--purple); border: 1px solid rgba(124,58,237,0.25); }
+    .badge-user  { background: rgba(18,105,211,0.08); color: var(--blue);   border: 1px solid rgba(18,105,211,0.18); }
+
+    .mono { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--muted); }
+    .num-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 24px; border-radius: 8px; background: rgba(18,105,211,0.08); color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; padding: 0 8px; }
+    .empty-row td { text-align: center; color: var(--soft); padding: 32px; font-family: 'Share Tech Mono', monospace; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">Administration</div>
+        <div class="brand-sub">ENSA Beni Mellal — Panneau Admin</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <a href="/" class="btn btn-blue">Chat</a>
+      <a href="/logout" class="btn btn-red">Deconnexion</a>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-heading">Tableau de bord</div>
+    <div class="page-sub">Metadonnees utilisateurs — acces RGPD conforme</div>
+
+    <div class="rgpd-notice">
+      <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/></svg>
+      <span><strong>Conformite RGPD</strong> — Cet espace affiche uniquement des metadonnees techniques (email, role, date, nombre de conversations). Le contenu des messages des utilisateurs n'est pas accessible depuis ce panneau.</span>
+    </div>
+
+    <!-- Statistiques globales -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Utilisateurs</div>
+        <div class="stat-value">{{ stats | length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Admins</div>
+        <div class="stat-value purple">{{ stats | selectattr('role', 'equalto', 'admin') | list | length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total conversations</div>
+        <div class="stat-value green">{{ stats | sum(attribute='nb_conversations') }}</div>
+      </div>
+    </div>
+
+    <!-- Tableau utilisateurs (métadonnées uniquement) -->
+    <div class="section-title">Utilisateurs inscrits</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Conversations</th>
+            <th>Derniere activite</th>
+            <th>Inscription</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if stats %}
+            {% for u in stats %}
+            <tr>
+              <td class="mono">{{ u.id }}</td>
+              <td style="font-weight:600;">{{ u.nom }}</td>
+              <td class="mono">{{ u.email }}</td>
+              <td>
+                {% if u.role == 'admin' %}<span class="badge badge-admin">Admin</span>
+                {% else %}<span class="badge badge-user">User</span>{% endif %}
+              </td>
+              <td><span class="num-badge">{{ u.nb_conversations }}</span></td>
+              <td class="mono">{{ u.derniere_activite or '—' }}</td>
+              <td class="mono">{{ u.date_creation or '—' }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="empty-row"><td colspan="7">Aucun utilisateur</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>
