@@ -58,10 +58,9 @@ Puis ouvre l'adresse affichée dans le terminal (en général `http://127.0.0.1:
 
 L'analyse complète (base légale, droits des personnes, AIPD, gouvernance, matrice des risques, politique d'usage) se trouve dans le rapport du projet.
 
-*À COMPLÉTER : ajoute le rapport dans un dossier `docs/` (avec l'accord de ta coéquipière) et le lien ici.*
+
 
 ## Limites
 
 Prototype pédagogique : il n'est pas destiné à un déploiement en production.
 
-*À COMPLÉTER : captures d'écran du projet (page de chat, filtre RGPD, historique) dans un dossier `images/`.*
